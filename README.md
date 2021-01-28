@@ -1,8 +1,8 @@
-# huntr-to-csv
+# Huntr-to-CSV
 
-A job board exporter tool for the Huntr Chrome extension.
+🚀 A job board exporter tool for the Huntr Chrome extension.
 
-### The Problem
+## The Problem
 
 **First of all, let me preface everything by stating that [Huntr](http://huntr.co/) has been very helpful to quickly get up and running with tracking of all my job applications in 
 one central location and I strongly urge that you pay it forward to the developers if/when you manage to land a job (I plan on doing so).**
@@ -24,7 +24,7 @@ to continuously add and remove jobs as required, and simply use their service as
 
 This tool will allow you to do exactly that.
 
-### Usage
+## Usage
 
 1. Create a .env file at the base of the project with the necessary variables as defined in .env.sample
 2. Run the script using `python main.py`
