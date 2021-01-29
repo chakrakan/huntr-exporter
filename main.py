@@ -86,7 +86,7 @@ def get_job_items_per_tab(driver: WebDriver, main_container: dict):
 def export_data_to_excel(data: dict):
     try:
         df = pd.DataFrame.from_dict(data, orient='index').transpose()
-        out_file = datetime.now().strftime("_%d-%m-%Y") + "_out"
+        out_file = datetime.now().strftime("%d-%m-%Y") + "_out"
         df.to_csv(out_file+".csv", index=False)
         df.to_excel(out_file+".xlsx", engine='xlsxwriter')
     except Exception as err:
