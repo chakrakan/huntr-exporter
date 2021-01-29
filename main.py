@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -10,6 +8,9 @@ from time import sleep
 import random
 import sys
 import os
+import pandas as pd
+from datetime import datetime
+from tqdm import tqdm
 
 
 def login(driver: WebDriver):
@@ -31,52 +32,66 @@ def login(driver: WebDriver):
         sys.exit(2)
 
 
-def get_dict_container(driver: WebDriver) -> tuple:
-    csv_container = OrderedDict()
-    parse_container = OrderedDict()
+def get_dict_container(driver: WebDriver) -> dict:
+    csv_container = dict()
     try:
         # Populate CSV container keys
         board_headers = driver.find_elements_by_xpath("//input[@class='list-name']")
         for item in board_headers:
             csv_container[item.get_attribute('value')] = None
-            parse_container[item.get_attribute('value')] = None
 
-        return csv_container, parse_container
+        return csv_container
     except Exception as err:
         print(f"Error parsing board headers:" + str(err))
         sys.exit(2)
 
 
-def get_job_items_per_tab(driver: WebDriver, parse_container: dict):
+def get_job_items_per_tab(driver: WebDriver, main_container: dict):
     try:
         list_containers = driver.find_elements_by_class_name('list-container')[:-1]
-        print(len(list_containers))
-        for list_item in list_containers:
-            job_container = list_item.find_elements_by_tag_name('div')[3]
-            parse_container.keys()
+        keys = list(main_container.keys())
+        print("Fetching data...")
+        for idx in range(len(list_containers)):
+            job_list = []
+            job_container = list_containers[idx].find_elements_by_tag_name('div')[3]
+            job_items = job_container.find_elements_by_tag_name('a')
 
-            # driver.implicitly_wait(5)
-            #
-            # # create a Job object from form input fields
-            # company = driver.find_element_by_xpath("//input[@placeholder='Company']").get_attribute('value')
-            # job_title = driver.find_element_by_xpath("//input[@placeholder='+ add title']").get_attribute('value')
-            # location = driver.find_element_by_xpath("//input[@placeholder='+ add location']").get_attribute('value')
-            # description = driver.find_element_by_class_name('ql-editor').text
-            # post_url = driver.find_element_by_xpath(
-            #     "//p[@title='Post URL']/following-sibling::div").find_element_by_tag_name('a').get_attribute('href')
-            #
-            # print(company, job_title, location, description, post_url)
-            #
-            # sleep(1 + random.random() * 4)
+            for job_item in tqdm(job_items):
+                driver.execute_script(f"window.open('{job_item.get_attribute('href')}', '_blank');")
+                windows = driver.window_handles
+                sleep(3)
+                driver.switch_to.window(windows[1])
+                driver.implicitly_wait(5)
+
+                # create a Job object from form input fields
+                company = driver.find_element_by_xpath("//input[@placeholder='Company']").get_attribute('value')
+                job_title = driver.find_element_by_xpath("//input[@placeholder='+ add title']").get_attribute('value')
+                location = driver.find_element_by_xpath("//input[@placeholder='+ add location']").get_attribute('value')
+                description = driver.find_element_by_class_name('ql-editor').text
+                post_url = driver.find_element_by_xpath(
+                    "//p[@title='Post URL']/following-sibling::div").find_element_by_tag_name('a').get_attribute('href')
+
+                a_job = Job(company, job_title, post_url, location, description)
+                job_list.append(a_job.as_dict())
+                driver.close()
+                driver.switch_to.window(windows[0])
+
+            main_container[keys[idx]] = job_list
 
     except Exception as err:
-        print(f"Error parsing jobs from a list_item:" + str(err))
+        print(f"Error getting job_container:" + str(err))
         sys.exit(2)
 
 
-# def parse_job(job_container) -> Job:
-#     try:
-#         job_container.click()
+def export_data_to_excel(data: dict):
+    try:
+        df = pd.DataFrame.from_dict(data, orient='index').transpose()
+        out_file = datetime.now().strftime("_%d-%m-%Y") + "_out"
+        df.to_csv(out_file+".csv", index=False)
+        df.to_excel(out_file+".xlsx", engine='xlsxwriter')
+    except Exception as err:
+        print(f"Error creating outfile:" + str(err))
+        sys.exit(2)
 
 
 def check_environment_vars():
@@ -118,8 +133,9 @@ def main():
 
     # create dict from board data
     login(driver)
-    main_container, parse_container = get_dict_container(driver)
-    get_job_items_per_tab(driver, parse_container)
+    main_container = get_dict_container(driver)
+    get_job_items_per_tab(driver, main_container)
+    export_data_to_excel(main_container)
 
 
 if __name__ == '__main__':
