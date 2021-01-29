@@ -17,12 +17,13 @@ Now that I am using the app, however, there are a few things
 that I wanted within which are not available to me (makes sense as a design decision from their perspective):
 
 - Ability to track more than 40 jobs (after all, finding the right one is a numbers game)
-- Ability to export a job board to a CSV
+- Ability to export a job board to a parsable format such as CSV, JSON, or to a Excel spreadsheet
+- Ability to create different types of diagrams from the data itself rather than the ones provided in their paid offering of a simple curve diagram of application trends over time.
 
-Now due to the paid model that Huntr has, exporting to CSV is something that is unlikely for them to offer because it enables any user 
+Now due to the paid model that Huntr has, exporting data is something that is unlikely for them to offer because it enables any user 
 to continuously add and remove jobs as required, and simply use their service as a html tag selector to get relevant job details off a posting.
 
-This tool will allow you to do exactly that.
+This tool will allow you to do exactly that - grab the data, and make sense out of it in whichever way you'd like.
 
 ## Usage
 
