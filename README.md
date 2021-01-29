@@ -1,4 +1,4 @@
-# Huntr-to-CSV
+# Huntr-Exporter
 
 🚀 A job board exporter tool for the Huntr Chrome extension.
 
