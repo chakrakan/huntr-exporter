@@ -83,7 +83,7 @@ def get_job_items_per_tab(driver: WebDriver, main_container: dict):
         sys.exit(2)
 
 
-def export_data_to_excel(data: dict):
+def export_data(data: dict):
     try:
         df = pd.DataFrame.from_dict(data, orient='index').transpose()
         out_file = datetime.now().strftime("%d-%m-%Y") + "_out"
@@ -135,7 +135,7 @@ def main():
     login(driver)
     main_container = get_dict_container(driver)
     get_job_items_per_tab(driver, main_container)
-    export_data_to_excel(main_container)
+    export_data(main_container)
 
 
 if __name__ == '__main__':
