@@ -30,6 +30,13 @@ This tool will allow you to do exactly that - grab the data, and make sense out 
 1. Create a .env file at the base of the project with the necessary variables as defined in .env.sample
 2. Run the script using `python main.py`
 
+## Note
+
+You can also un-archive your past boards temporarily and get info from those by populating 
+the `ARCHIVED_BOARD_NAME` environment variable in your env and setting the title accordingly.
+
+Then re-archive old boards to continue adding to the main board in use.
+
 
 
 

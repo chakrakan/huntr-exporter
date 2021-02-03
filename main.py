@@ -46,6 +46,15 @@ def get_dict_container(driver: WebDriver) -> dict:
         sys.exit(2)
 
 
+def get_archived_board(driver: WebDriver):
+    try:
+        board_title = driver.find_element_by_xpath(f"//p[@title='{os.getenv('ARCHIVED_BOARD_NAME')}']")
+        board_title.click()
+    except Exception as err:
+        print(f"Error finding your board {os.getenv('ARCHIVED_BOARD_NAME')}:" + str(err))
+        sys.exit(2)
+
+
 def get_job_items_per_tab(driver: WebDriver, main_container: dict):
     try:
         list_containers = driver.find_elements_by_class_name('list-container')[:-1]
@@ -86,7 +95,7 @@ def get_job_items_per_tab(driver: WebDriver, main_container: dict):
 def export_data(data: dict):
     try:
         df = pd.DataFrame.from_dict(data, orient='index').transpose()
-        out_file = datetime.now().strftime("%d-%m-%Y") + "_out"
+        out_file = datetime.now().strftime("%d-%m-%Y_%H-%M-%S") + "_out"
         df.to_csv(out_file+".csv", index=False)
         df.to_excel(out_file+".xlsx", engine='xlsxwriter')
     except Exception as err:
@@ -133,6 +142,8 @@ def main():
 
     # create dict from board data
     login(driver)
+    if 'ARCHIVED_BOARD_NAME' in os.environ:
+        get_archived_board(driver)
     main_container = get_dict_container(driver)
     get_job_items_per_tab(driver, main_container)
     export_data(main_container)
