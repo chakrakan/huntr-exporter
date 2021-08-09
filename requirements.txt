@@ -7,4 +7,4 @@ selenium==3.141.0
 six==1.16.0
 tqdm==4.62.0
 urllib3==1.26.6
-XlsxWriter==1.4.5
+XlsxWriter==2.0.0
