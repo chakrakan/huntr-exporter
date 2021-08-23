@@ -5,6 +5,6 @@ python-dotenv==0.19.0
 pytz==2021.1
 selenium==3.141.0
 six==1.16.0
-tqdm==4.62.1
+tqdm==4.62.2
 urllib3==1.26.6
 XlsxWriter==3.0.1
