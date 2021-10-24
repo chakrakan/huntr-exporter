@@ -27,8 +27,9 @@ This tool will allow you to do exactly that - grab the data, and make sense out 
 
 ## Usage
 
-1. Create a .env file at the base of the project with the necessary variables as defined in .env.sample
-2. Run the script using `python main.py`
+1. Before you do anything, make sure you setup a virtual env and install all dependencies from the requirements file for your [respective working environment](https://docs.python.org/3/tutorial/venv.html)
+2. Create a .env file at the base of the project with the necessary variables as defined in .env.sample
+3. Run the script using `python main.py`
 
 ## Note
 

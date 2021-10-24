@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
@@ -17,8 +18,8 @@ def login(driver: WebDriver):
     try:
         driver.get(os.getenv("HUNTR_BOARD_URL"))
         driver.implicitly_wait(5)
-        email_input = driver.find_element_by_xpath("//input[@type='email']")
-        password_input = driver.find_element_by_xpath("//input[@type='password']")
+        email_input = driver.find_element(By.XPATH, "//input[@type='email']")
+        password_input = driver.find_element(By.XPATH, "//input[@type='password']")
         email_input.send_keys(os.getenv("HUNTR_USERNAME"))
         password_input.send_keys(os.getenv("HUNTR_PASSWORD"))
         driver.implicitly_wait(5)
@@ -36,7 +37,7 @@ def get_dict_container(driver: WebDriver) -> dict:
     csv_container = dict()
     try:
         # Populate CSV container keys
-        board_headers = driver.find_elements_by_xpath("//input[@class='list-name']")
+        board_headers = driver.find_elements(By.XPATH, "//input[@class='list-name']")
         for item in board_headers:
             csv_container[item.get_attribute('value')] = None
 
@@ -48,7 +49,7 @@ def get_dict_container(driver: WebDriver) -> dict:
 
 def get_archived_board(driver: WebDriver):
     try:
-        board_title = driver.find_element_by_xpath(f"//p[@title='{os.getenv('ARCHIVED_BOARD_NAME')}']")
+        board_title = driver.find_element(By.XPATH, f"//p[@title='{os.getenv('ARCHIVED_BOARD_NAME')}']")
         board_title.click()
     except Exception as err:
         print(f"Error finding your board {os.getenv('ARCHIVED_BOARD_NAME')}:" + str(err))
@@ -57,13 +58,13 @@ def get_archived_board(driver: WebDriver):
 
 def get_job_items_per_tab(driver: WebDriver, main_container: dict):
     try:
-        list_containers = driver.find_elements_by_class_name('list-container')[:-1]
+        list_containers = driver.find_elements(By.CLASS_NAME, 'list-container')[:-1]
         keys = list(main_container.keys())
         print("Fetching data...")
         for idx in range(len(list_containers)):
             job_list = []
-            job_container = list_containers[idx].find_elements_by_tag_name('div')[3]
-            job_items = job_container.find_elements_by_tag_name('a')
+            job_container = list_containers[idx].find_elements(By.TAG_NAME, 'div')[3]
+            job_items = job_container.find_elements(By.TAG_NAME, 'a')
 
             for job_item in tqdm(job_items):
                 driver.execute_script(f"window.open('{job_item.get_attribute('href')}', '_blank');")
@@ -73,12 +74,12 @@ def get_job_items_per_tab(driver: WebDriver, main_container: dict):
                 driver.implicitly_wait(5)
 
                 # create a Job object from form input fields
-                company = driver.find_element_by_xpath("//input[@placeholder='Company']").get_attribute('value')
-                job_title = driver.find_element_by_xpath("//input[@placeholder='+ add title']").get_attribute('value')
-                location = driver.find_element_by_xpath("//input[@placeholder='+ add location']").get_attribute('value')
-                description = driver.find_element_by_class_name('ql-editor').text
-                post_url = driver.find_element_by_xpath(
-                    "//p[@title='Post URL']/following-sibling::div").find_element_by_tag_name('a').get_attribute('href')
+                company = driver.find_element(By.XPATH, "//input[@placeholder='Company']").get_attribute('value')
+                job_title = driver.find_element(By.XPATH, "//input[@placeholder='+ add title']").get_attribute('value')
+                location = driver.find_element(By.XPATH, "//input[@placeholder='+ add location']").get_attribute('value')
+                description = driver.find_element(By.CLASS_NAME, 'ql-editor').text
+                post_url = driver.find_element(By.XPATH, 
+                    "//p[@title='Post URL']/following-sibling::div").find_element(By.TAG_NAME, 'a').get_attribute('href')
 
                 a_job = Job(company, job_title, post_url, location, description)
                 job_list.append(a_job.as_dict())
