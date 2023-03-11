@@ -6,5 +6,5 @@ pytz==2021.3
 selenium==4.8.2
 six==1.16.0
 tqdm==4.64.1
-urllib3==1.26.14
+urllib3==1.26.15
 XlsxWriter==3.0.8
