@@ -2,7 +2,7 @@ numpy==1.26.4
 pandas
 python-dateutil==2.8.2
 python-dotenv==1.0.1
-pytz==2024.1
+pytz==2025.2
 selenium==4.18.0
 six==1.16.0
 tqdm==4.66.2
